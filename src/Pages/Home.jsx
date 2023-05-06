@@ -4,8 +4,10 @@ import { v4 as uuidV4 } from "uuid";
 import { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+    const navigate = useNavigate();
     const [roomID, setRoomID] = useState('');
     const [userName, setUserName] = useState('');
 
@@ -24,6 +26,35 @@ const Home = () => {
             theme: "dark",
         });
     }
+
+    const joinRoom = () =>{
+        if(!roomID || !userName){
+            toast.error('Room ID & Username is required', {
+                position: "top-center",
+                autoClose: 1000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+        else{
+            navigate(`/editor/${roomID}`, {
+                state: {
+                    userName
+                }
+            })
+        }
+    }
+
+    const handleEnter = (e) =>{
+        if(e.code === "Enter"){
+            joinRoom();
+        }
+    }
+    
     return (
         <div className="homePageWrapper">
             <div className="logo">
@@ -54,6 +85,7 @@ const Home = () => {
                                 className="inputBox"
                                 onChange={(e) => setRoomID(e.target.value)}
                                 value={roomID}
+                                onKeyUp={handleEnter}
                             />
                             <input
                                 type="text"
@@ -61,8 +93,9 @@ const Home = () => {
                                 className="inputBox"
                                 onChange={(e) => setUserName(e.target.value)}
                                 value={userName}
+                                onKeyUp={handleEnter}
                             />
-                            <button className="join-button">Join</button>
+                            <button className="join-button" onClick={joinRoom}>Join</button>
                             <span className="create-info">
                                 If you don't have an invite then create &nbsp;
                                 <a onClick={createNewRoom} href="#" className="createNewBtn">new room</a>
