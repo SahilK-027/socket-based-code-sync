@@ -1,0 +1,133 @@
+.mainWrap {
+    display: grid;
+    grid-template-columns: 230px 1fr;
+
+    .aside {
+        background: #0e0e0e;
+        padding: 16px;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100vh;
+
+        .aside-inner {
+            .logo {
+                display: flex;
+                align-items: center;
+
+                .header-logo {
+                    width: 50px;
+                    margin: 10px;
+                }
+
+                border-bottom: 2px solid #ed155d4f;
+            }
+
+            .collaborator {
+                margin: 20px 0;
+            }
+
+            .clientList {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                gap: 20px;
+            }
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+
+            .copy-button {
+                display: flex;
+                align-items: center;
+                padding: 12px;
+                font-size: 16px;
+                font-weight: bold;
+                text-align: center;
+                text-decoration: none;
+                color: white;
+                background-color: #ed155d;
+                border-radius: 8px;
+                box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+                transition: all 0.2s ease-in-out;
+                position: relative;
+                overflow: hidden;
+                border: none;
+                cursor: pointer;
+                justify-content: center;
+                margin: 10px 0;
+            }
+
+            .copy-button:before {
+                content: '';
+                display: block;
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background-color: rgba(255, 255, 255, 0.1);
+                transform-origin: 0 0;
+                transform: translate(-25%, -75%) rotate(-45deg);
+                transition: all 0.5s ease-in-out;
+            }
+
+            .copy-button:hover:before {
+                transform: translate(125%, 125%) rotate(-45deg);
+            }
+
+            .copy-button:hover {
+                box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+            }
+
+
+            .leave-button {
+                display: flex;
+                align-items: center;
+                padding: 12px;
+                font-size: 16px;
+                font-weight: bold;
+                text-align: center;
+                text-decoration: none;
+                color: white;
+                background-color: #272727;
+                border-radius: 8px;
+                box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+                transition: all 0.2s ease-in-out;
+                position: relative;
+                overflow: hidden;
+                border: none;
+                cursor: pointer;
+                justify-content: center;
+                margin: 10px 0;
+            }
+
+            .leave-button:before {
+                content: '';
+                display: block;
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background-color: rgba(255, 255, 255, 0.1);
+                transform-origin: 0 0;
+                transform: translate(-25%, -75%) rotate(-45deg);
+                transition: all 0.5s ease-in-out;
+            }
+
+            .leave-button:hover:before {
+                transform: translate(125%, 125%) rotate(-45deg);
+            }
+
+            .leave-button:hover {
+                box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+    }
+
+}
