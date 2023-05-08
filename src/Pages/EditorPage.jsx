@@ -3,8 +3,25 @@ import { useState } from "react";
 import Client from "../Components/Client";
 import Editor from "../Components/Editor";
 import './styles/EditorPage.scss'
+import { useRef, useEffect } from "react";
+import { initSocket } from "../Socket";
+import ACTIONS from "../Actions";
+import { useLocation } from "react-router-dom";
 
 const EditorPage = () => {
+    const socketRef = useRef(null);
+    const location = useLocation();
+    useEffect(() => {
+      const init = async () =>{
+        socketRef.current = await initSocket();
+        // socketRef.current.emit(ACTIONS.JOIN, {
+        //     roomID,
+        //     userName: location.state?.userName
+        // });
+      } 
+      init();
+    }, [])
+    
     const [clients, setClients] = useState([
         { socketId: 1, userName: "Andy R." },
         { socketId: 2, userName: "Viv Richard" },
