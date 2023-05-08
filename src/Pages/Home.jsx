@@ -94,7 +94,7 @@ const Home = () => {
                                 onChange={(e) => setUserName(e.target.value)}
                                 value={userName}
                                 onKeyUp={handleEnter}
-                                maxLength="15"
+                                maxLength="12"
                             />
                             <button className="join-button" onClick={joinRoom}>Join</button>
                             <span className="create-info">

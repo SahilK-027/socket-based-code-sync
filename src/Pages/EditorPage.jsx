@@ -6,30 +6,95 @@ import './styles/EditorPage.scss'
 import { useRef, useEffect } from "react";
 import { initSocket } from "../Socket";
 import ACTIONS from "../Actions";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 const EditorPage = () => {
     const socketRef = useRef(null);
     const location = useLocation();
-    useEffect(() => {
-      const init = async () =>{
-        socketRef.current = await initSocket();
-        // socketRef.current.emit(ACTIONS.JOIN, {
-        //     roomID,
-        //     userName: location.state?.userName
-        // });
-      } 
-      init();
-    }, [])
-    
+    const reactNavigator = useNavigate();
+    const { roomId } = useParams();
+
     const [clients, setClients] = useState([
-        { socketId: 1, userName: "Andy R." },
-        { socketId: 2, userName: "Viv Richard" },
-        { socketId: 3, userName: "Vhkbq hjjhsd jhgs" },
-        { socketId: 4, userName: "hjwbsdx" },
-        { socketId: 5, userName: "hkwbed h" },
-        { socketId: 6, userName: "hjebd" },
+
     ]);
+
+    useEffect(() => {
+        const init = async () => {
+            socketRef.current = await initSocket();
+            socketRef.current.on('connect_error', (err) => handleErrors(err));
+            socketRef.current.on('connect_failed', (err) => handleErrors(err));
+
+            function handleErrors(err) {
+                console.log('Socket Error', err);
+                toast.error('Socket connection failed, try again.', {
+                    position: "top-center",
+                    autoClose: 1000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: false,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                reactNavigator('/');
+            }
+
+            // Sending Event: Someone joining 
+            socketRef.current.emit(ACTIONS.JOIN, {
+                roomId,
+                userName: location.state?.userName
+            });
+
+
+            // Listening Event: Someone joined
+            socketRef.current.on(
+                ACTIONS.JOINED,
+                ({ clients, userName, socketId }) => {
+                    if (userName != location.state?.userName) {
+                        toast.success(`${userName} joined the room.`, {
+                            position: "top-center",
+                            autoClose: 1000,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: false,
+                            progress: undefined,
+                            theme: "dark",
+                        });
+                    }
+                    setClients(clients);
+                }
+            );
+
+            // Listening Event: Someone disconnected
+            socketRef.current.on(
+                ACTIONS.DISCONNECTED,
+                ({ userName, socketId }) => {
+                    toast.info(`${userName} left the room.`, {
+                        position: "top-center",
+                        autoClose: 1000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: false,
+                        progress: undefined,
+                        theme: "dark",
+                    });
+                    setClients((prev) => {
+                        return prev.filter(client => client.socketId !== socketId);
+                    });
+                }
+            );
+
+        }
+        init();
+    }, [])
+
+    if (!location.state) {
+        return <Navigate to='/' />
+    }
+
     return (
         <div className="mainWrap">
             <div className="aside">
@@ -60,6 +125,19 @@ const EditorPage = () => {
             <div className="editorWrap">
                 <Editor />
             </div>
+
+            <ToastContainer
+                position="top-center"
+                autoClose={1000}
+                hideProgressBar
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss={false}
+                draggable={false}
+                pauseOnHover
+                theme="dark"
+            />
         </div>
     )
 }
