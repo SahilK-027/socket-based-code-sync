@@ -19,7 +19,6 @@ function getAllConnectedClients(roomId) {
 }
 
 io.on('connection', (socket) => {
-    console.log('socket connected', socket.id);
     socket.on(ACTIONS.JOIN, ({ roomId, userName }) => {
         userSocketMap[socket.id] = userName;
         socket.join(roomId);
@@ -30,6 +29,19 @@ io.on('connection', (socket) => {
                 userName: userName,
                 socketId: socket.id
             });
+        });
+    });
+
+    socket.on(ACTIONS.CODE_CHANGE, ({roomId, code}) => {
+        socket.in(roomId).emit(ACTIONS.CODE_CHANGE, {
+            code
+        });
+    });
+
+
+    socket.on(ACTIONS.SYNC_CODE, ({code, socketId}) => {
+        io.to(socketId).emit(ACTIONS.CODE_CHANGE, {
+            code
         });
     });
     
@@ -48,4 +60,4 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 8000;
-server.listen(PORT, () => console.log(`listening on PORT: ${PORT}`))
+server.listen(PORT, () => {})

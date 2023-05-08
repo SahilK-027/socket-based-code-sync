@@ -14,9 +14,9 @@ const EditorPage = () => {
     const location = useLocation();
     const reactNavigator = useNavigate();
     const { roomId } = useParams();
+    const codeRef = useRef(null);
 
     const [clients, setClients] = useState([
-
     ]);
 
     useEffect(() => {
@@ -26,9 +26,8 @@ const EditorPage = () => {
             socketRef.current.on('connect_failed', (err) => handleErrors(err));
 
             function handleErrors(err) {
-                console.log('Socket Error', err);
                 toast.error('Socket connection failed, try again.', {
-                    position: "top-center",
+                    position: "top-right",
                     autoClose: 1000,
                     hideProgressBar: true,
                     closeOnClick: true,
@@ -53,7 +52,7 @@ const EditorPage = () => {
                 ({ clients, userName, socketId }) => {
                     if (userName != location.state?.userName) {
                         toast.success(`${userName} joined the room.`, {
-                            position: "top-center",
+                            position: "top-right",
                             autoClose: 1000,
                             hideProgressBar: true,
                             closeOnClick: true,
@@ -64,6 +63,10 @@ const EditorPage = () => {
                         });
                     }
                     setClients(clients);
+                    socketRef.current.emit(ACTIONS.SYNC_CODE, {
+                        code: codeRef.current,
+                        socketId
+                    })
                 }
             );
 
@@ -72,7 +75,7 @@ const EditorPage = () => {
                 ACTIONS.DISCONNECTED,
                 ({ userName, socketId }) => {
                     toast.info(`${userName} left the room.`, {
-                        position: "top-center",
+                        position: "top-right",
                         autoClose: 1000,
                         hideProgressBar: true,
                         closeOnClick: true,
@@ -89,11 +92,51 @@ const EditorPage = () => {
 
         }
         init();
+
+        return ()=>{
+            socketRef.current.off(ACTIONS.JOINED);
+            socketRef.current.off(ACTIONS.DISCONNECTED);
+            socketRef.current.disconnect();
+        }
     }, [])
+
 
     if (!location.state) {
         return <Navigate to='/' />
     }
+
+    async function copyRoomId(){
+        try {
+            await navigator.clipboard.writeText(roomId);
+            toast.success(`roomID copied to clipboard`, {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                theme: "dark",
+            });
+        } 
+        catch (err) {
+            toast.error(`Error! please try again.`, {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+    }
+
+    function leaveRoom(){
+        reactNavigator('/')
+    }
+
 
     return (
         <div className="mainWrap">
@@ -116,14 +159,21 @@ const EditorPage = () => {
 
                 </div>
                 <div className="button-container">
-                    <button className="copy-button">Copy RoomId</button>
-                    <button className="leave-button">Leave Room</button>
+                    <button className="copy-button" onClick={copyRoomId}>Copy RoomId</button>
+                    <button className="leave-button" onClick={leaveRoom}>Leave Room</button>
                 </div>
 
             </div>
 
             <div className="editorWrap">
-                <Editor />
+                <Editor 
+                socketRef = {socketRef} 
+                roomId = {roomId} 
+                onCodeChange = { (code) =>{
+                    codeRef.current = code;
+                }}
+
+                />
             </div>
 
             <ToastContainer
