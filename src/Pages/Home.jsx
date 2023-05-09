@@ -104,7 +104,7 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
-                <p className="footer-text">Created with &nbsp;❤️&nbsp; by <a target="_blank" href="https://github.com/sahilk-027"> SahilK-027 </a> </p>
+                <p className="footer-text">Created with &nbsp;❤️&nbsp; by <a target="_blank" rel="noreferrer"  href="https://github.com/sahilk-027"> SahilK-027 </a> </p>
             </div>
             <ToastContainer
                 position="top-center"

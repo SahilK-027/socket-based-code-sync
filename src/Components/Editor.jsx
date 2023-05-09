@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import Codemirror, { modes } from "codemirror";
+import Codemirror from "codemirror";
 import 'codemirror/mode/javascript/javascript.js';
 import 'codemirror/theme/material-palenight.css'
 import 'codemirror/addon/edit/closetag'
@@ -47,7 +47,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
                 const { origin } = changes;
                 const code = instance.getValue();
                 onCodeChange(code);
-                if (origin != 'setValue') {
+                if (origin !== 'setValue') {
                     socketRef.current.emit(ACTIONS.CODE_CHANGE, {
                         roomId,
                         code
