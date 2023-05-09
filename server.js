@@ -9,10 +9,10 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 // Handling deployment
-// app.use(express.static('build'));
-// app.use((req, res, next)=>{
-//     res.sendFile(path.join(__dirname, 'build', 'index.html'))
-// })
+app.use(express.static('build'));
+app.use((req, res, next)=>{
+    res.sendFile(path.join(__dirname, 'build', 'index.html'))
+})
 
 
 
