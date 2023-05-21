@@ -47,6 +47,9 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
                 const { origin } = changes;
                 const code = instance.getValue();
                 onCodeChange(code);
+                console.log(code);
+                const output = document.getElementById('output');
+                output.innerHTML = code;
                 if (origin !== 'setValue') {
                     socketRef.current.emit(ACTIONS.CODE_CHANGE, {
                         roomId,
@@ -75,6 +78,9 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
     return (
         <div>
             <textarea id="realtimeEditor"></textarea>
+            <div id='output'>
+                <h1>Hello Script Smith</h1>
+            </div>
         </div>
     )
 }
